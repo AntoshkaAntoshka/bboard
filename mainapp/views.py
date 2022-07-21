@@ -1,4 +1,6 @@
-from django.http import HttpResponse
+from django.shortcuts import render
+from .models import Bb
 
 def index(request):
-    return HttpResponse('All messages here!')
+    bbs = Bb.objects.order_by('-published')
+    return render(request, 'mainapp/index.html', {'bbs': bbs})
