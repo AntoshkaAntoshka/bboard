@@ -1,5 +1,9 @@
+from multiprocessing import context
 from django.shortcuts import render
 from .models import Bb, Rubric
+from django.views.generic.edit import CreateView
+from .forms import BbForm
+from django.urls import reverse_lazy
 
 def index(request):
     bbs = Bb.objects.all()
@@ -13,3 +17,13 @@ def by_rubric(request, rubric_id):
     current_rubric = Rubric.objects.get(pk=rubric_id)
     context = {'bbs': bbs, 'rubrics': rubrics, 'current_rubric': current_rubric}
     return render(request, 'mainapp/by_rubric.html', context)
+
+class BbCreateView(CreateView):
+    template_name = 'mainapp/create.html'
+    form_class = BbForm
+    success_url = reverse_lazy('index')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['rubrics'] = Rubric.objects.all()
+        return context
